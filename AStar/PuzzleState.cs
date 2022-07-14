@@ -1,7 +1,8 @@
 namespace AStar;
 
-public class PuzzleState {
+public class PuzzleState: IComparable<PuzzleState>, IEquatable<PuzzleState> {
     private readonly int[] _pieces;
+    private int cost;
 
     public PuzzleState() {
         var generator = new Random();
@@ -15,5 +16,13 @@ public class PuzzleState {
 
     public PuzzleState[] Children() {
         return new PuzzleState[4];
+    }
+
+    public int CompareTo(PuzzleState? other) {
+        return other == null ? 1 : cost.CompareTo(other.cost);
+    }
+
+    public bool Equals(PuzzleState? other) {
+        return _pieces == other?._pieces;
     }
 }

@@ -2,7 +2,7 @@ namespace AStar;
 
 public class PuzzleSolver {
     private Tree<PuzzleState> _tree;
-    private SortedSet<PuzzleState> _frontier = new SortedSet<PuzzleState>();
+    private readonly StateList<PuzzleState> _frontier = new StateList<PuzzleState>();
     private HashSet<PuzzleState> _exploredStates = new HashSet<PuzzleState>();
 
     public PuzzleSolver(PuzzleState initialState) {
@@ -10,15 +10,10 @@ public class PuzzleSolver {
     }
 
     private void Step() {
-        var current = _frontier.First();
+        var current = _frontier.Pop();
+        if (current == null) return;
         var expansion = current.Children();
-        foreach (var state in expansion) {
-            AddToFrontier(state);
-        }
-    }
-
-    private void AddToFrontier(PuzzleState state) {
-        _frontier.Add(state);
+        foreach (var state in expansion) { }
     }
 
     //public PuzzleState Solve() {}
