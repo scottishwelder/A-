@@ -35,45 +35,54 @@ public class SlidingPuzzleState : State<SlidingPuzzleState> {
         return sum;
     }
 
+    //TODO Lower Redundancy
     public override IEnumerable<SlidingPuzzleState> Children() {
         var zeroPosition = Array.IndexOf(_pieces, 0);
         var zeroCoordinate = (zeroPosition % 3, zeroPosition / 3);
-        var childrenDirections = new List<Direction>();
 
-        if (zeroCoordinate.Item2 > 0)
-            childrenDirections.Add(Direction.North);
-        if (zeroCoordinate.Item1 > 0)
-            childrenDirections.Add(Direction.West);
-        if (zeroCoordinate.Item1 < 2)
-            childrenDirections.Add(Direction.South);
-        if (zeroCoordinate.Item1 < 2)
-            childrenDirections.Add(Direction.East);
+        var children = new List<SlidingPuzzleState>();
 
-        return childrenDirections.Select(ChildrenFromDirection);
-    }
+        if (zeroCoordinate.Item2 > 0) {
+            var newPieces = (int[])_pieces.Clone();
+            var movingPieceCoordinate = (zeroCoordinate.Item1, zeroCoordinate.Item2 - 1);
+            var movingPiecePosition = movingPieceCoordinate.Item2 * 3 + movingPieceCoordinate.Item1;
+            newPieces[zeroPosition] = newPieces[movingPiecePosition];
+            newPieces[movingPiecePosition] = 0;
+            children.Add(new SlidingPuzzleState(_cost + 1, newPieces));
+        }
 
-    private SlidingPuzzleState ChildrenFromDirection(Direction direction) {
-        var newPieces = (int[])_pieces.Clone();
-        var zeroPosition = Array.IndexOf(_pieces, 0);
-        var zeroCoordinate = (zeroPosition % 3, zeroPosition / 3);
-        var movingPieceCoordinate = direction switch {
-            Direction.North => (zeroCoordinate.Item1, zeroCoordinate.Item1 - 1),
-            Direction.West => (zeroCoordinate.Item1 - 1, zeroCoordinate.Item1),
-            Direction.South => (zeroCoordinate.Item1, zeroCoordinate.Item1 + 1),
-            Direction.East => (zeroCoordinate.Item1 + 1, zeroCoordinate.Item1),
-            _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
-        };
+        if (zeroCoordinate.Item1 > 0) {
+            var newPieces = (int[])_pieces.Clone();
+            var movingPieceCoordinate = (zeroCoordinate.Item1 - 1, zeroCoordinate.Item2);
+            var movingPiecePosition = movingPieceCoordinate.Item2 * 3 + movingPieceCoordinate.Item1;
+            newPieces[zeroPosition] = newPieces[movingPiecePosition];
+            newPieces[movingPiecePosition] = 0;
+            children.Add(new SlidingPuzzleState(_cost + 1, newPieces));
+        }
 
-        var movingPiecePosition = movingPieceCoordinate.Item2 * 3 + movingPieceCoordinate.Item1;
+        if (zeroCoordinate.Item2 < 2) {
+            var newPieces = (int[])_pieces.Clone();
+            var movingPieceCoordinate = (zeroCoordinate.Item1, zeroCoordinate.Item2 + 1);
+            var movingPiecePosition = movingPieceCoordinate.Item2 * 3 + movingPieceCoordinate.Item1;
+            newPieces[zeroPosition] = newPieces[movingPiecePosition];
+            newPieces[movingPiecePosition] = 0;
+            children.Add(new SlidingPuzzleState(_cost + 1, newPieces));
+        }
 
-        newPieces[zeroPosition] = newPieces[movingPiecePosition];
-        newPieces[movingPiecePosition] = 0;
+        if (zeroCoordinate.Item1 < 2) {
+            var newPieces = (int[])_pieces.Clone();
+            var movingPieceCoordinate = (zeroCoordinate.Item1 + 1, zeroCoordinate.Item2);
+            var movingPiecePosition = movingPieceCoordinate.Item2 * 3 + movingPieceCoordinate.Item1;
+            newPieces[zeroPosition] = newPieces[movingPiecePosition];
+            newPieces[movingPiecePosition] = 0;
+            children.Add(new SlidingPuzzleState(_cost + 1, newPieces));
+        }
 
-        return new SlidingPuzzleState(_cost + 1, newPieces);
+        return children;
     }
 
     public override int CompareTo(SlidingPuzzleState? other) {
-        return other == null ? 1 : _cost.CompareTo(other._cost);
+        return other == null ? 1 : ExpectedCost.CompareTo(other.ExpectedCost);
     }
 
     public override bool Equals(SlidingPuzzleState? other) {

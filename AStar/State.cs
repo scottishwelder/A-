@@ -5,6 +5,8 @@ public abstract class State<TDerived> : IComparable<TDerived>, IEquatable<TDeriv
     protected int _cost;
     private int _heuristicCost;
 
+    protected int ExpectedCost => _cost + _heuristicCost;
+
     protected State(int cost) {
         _cost = cost;
     }
@@ -13,9 +15,9 @@ public abstract class State<TDerived> : IComparable<TDerived>, IEquatable<TDeriv
         _heuristicCost = HeuristicCost();
     }
 
-    private int ExpectedCost => _cost + _heuristicCost;
     protected abstract int HeuristicCost();
     public abstract IEnumerable<TDerived> Children();
     public abstract int CompareTo(TDerived? other);
     public abstract bool Equals(TDerived? other);
+    public abstract override int GetHashCode();
 }
