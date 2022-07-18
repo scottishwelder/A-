@@ -1,19 +1,24 @@
 namespace AStar;
 
 public class PuzzleSolver {
-    private Tree<PuzzleState> _tree;
-    private readonly StateList<PuzzleState> _frontier = new StateList<PuzzleState>();
-    private HashSet<PuzzleState> _exploredStates = new HashSet<PuzzleState>();
+    private StateNode<SlidingPuzzleState> _root;
+    private readonly StateList<StateNode<SlidingPuzzleState>> _frontier = new();
+    private HashSet<SlidingPuzzleState> _exploredStates = new();
 
-    public PuzzleSolver(PuzzleState initialState) {
-        _tree = new Tree<PuzzleState>(initialState, 4);
+    public PuzzleSolver(SlidingPuzzleState initialState) {
+        _root = new StateNode<SlidingPuzzleState>(initialState, null);
+        _frontier.Add(_root);
     }
 
     private void Step() {
         var current = _frontier.Pop();
         if (current == null) return;
-        var expansion = current.Children();
-        foreach (var state in expansion) { }
+        _exploredStates.Add(current.Data);
+        var expansion = current.Expand();
+        foreach (var stateNode in expansion) {
+            if (!_exploredStates.Contains(stateNode.Data))
+                _frontier.Add(stateNode);
+        }
     }
 
     //public PuzzleState Solve() {}

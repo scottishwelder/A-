@@ -2,7 +2,7 @@
 
 class AStar {
     private static int Main() {
-        var solver = new PuzzleSolver(new PuzzleState());
+        //var solver = new PuzzleSolver(new PuzzleState());
         //solver.solve();
         return 0;
     }
