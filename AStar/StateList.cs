@@ -1,7 +1,8 @@
 namespace AStar;
 
 public class StateList<T> where T : class, IComparable<T>, IEquatable<T> {
-    private class Node {
+    //TODO Set private
+    public class Node {
         public T Data { get; }
         public Node? NextNode;
 
@@ -15,7 +16,8 @@ public class StateList<T> where T : class, IComparable<T>, IEquatable<T> {
         }
     }
 
-    private Node? _head;
+    //TODO Set private
+    public Node? _head;
     public int Length { get; private set; } = 0;
 
     public void Add(T data) {
@@ -29,8 +31,15 @@ public class StateList<T> where T : class, IComparable<T>, IEquatable<T> {
                 return;
             }
         }
+
         if (_head == null) {
             _head = new Node(data);
+            Length++;
+            return;
+        }
+
+        if (data.CompareTo(_head.Data) < 0) {
+            _head = new Node(data, _head);
             Length++;
             return;
         }

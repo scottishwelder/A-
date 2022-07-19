@@ -3,9 +3,11 @@ namespace AStar;
 public abstract class State<TDerived> : IComparable<TDerived>, IEquatable<TDerived>
     where TDerived : State<TDerived> {
     protected int _cost;
-    private int _heuristicCost;
+    // TODO Set Private
+    public int _heuristicCost;
 
-    protected int ExpectedCost => _cost + _heuristicCost;
+    // TODO Set Private
+    public int ExpectedCost => _cost + _heuristicCost;
 
     protected State(int cost) {
         _cost = cost;

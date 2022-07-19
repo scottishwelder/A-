@@ -15,11 +15,21 @@ public class PuzzleSolver {
     }
 
     private StateNode<SlidingPuzzleState>? Step() {
+        /*for (var node = _frontier._head; node != null; node = node.NextNode) {
+            Console.WriteLine(string.Join(',', node.Data.Data._pieces) + " " + node.Data.Data.ExpectedCost + " " + node.Data.Data._heuristicCost);
+        }
+        Console.WriteLine("");*/
+
         steps++;
-        Console.WriteLine(steps + " " + _frontier.Length);
+
+        //Console.WriteLine(steps + " " + _frontier.Length + " " + _frontier._head?.Data.Data.ExpectedCost);
 
         var current = _frontier.Pop();
         if (current == null) throw new Exception("No Possible solution");
+
+        Console.WriteLine(steps + " " + _frontier.Length + " " + current.Data.ExpectedCost + " " +
+                          current.Data._heuristicCost);
+
         if (current.Data.Equals(_objective)) return current;
         _exploredStates.Add(current.Data);
         var expansion = current.Expand();
