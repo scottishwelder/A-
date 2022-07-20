@@ -20,7 +20,7 @@ internal static class AStar {
         var result = solver.Solve();
 
         for (var node = result; node != null; node = node._parent) {
-            Console.WriteLine(string.Join(',', node.Data._pieces));
+            Console.WriteLine(string.Join(',', node.Data.Pieces));
         }
 
         return 0;

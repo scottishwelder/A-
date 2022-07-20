@@ -1,46 +1,29 @@
-namespace AStar;
+namespace AStar.AdHocCollections;
 
 public class StateList<T> where T : class, IComparable<T>, IEquatable<T> {
-    //TODO Set private
-    public class Node {
-        public T Data { get; }
-        public Node? NextNode;
-
-        public Node(T data) {
-            Data = data;
-        }
-
-        public Node(T data, Node nextNode) {
-            Data = data;
-            NextNode = nextNode;
-        }
-    }
-
-    //TODO Set private
-    public Node? _head;
+    private Node? _head;
     public int Length { get; private set; } = 0;
 
     public void Add(T data) {
+        Length++;
         var (contains, oldNode) = Contains(data);
         if (contains) {
             if (data.CompareTo(oldNode.Data) < 0) {
                 Remove(oldNode);
-                Length--;
             }
             else {
+                Length--;
                 return;
             }
         }
 
         if (_head == null) {
             _head = new Node(data);
-            Length++;
             return;
         }
 
         if (data.CompareTo(_head.Data) < 0) {
             _head = new Node(data, _head);
-            Length++;
             return;
         }
 
@@ -56,8 +39,6 @@ public class StateList<T> where T : class, IComparable<T>, IEquatable<T> {
             var newNode = new Node(data);
             node.NextNode = newNode;
         }
-
-        Length++;
     }
 
     public T? Pop() {
@@ -71,6 +52,7 @@ public class StateList<T> where T : class, IComparable<T>, IEquatable<T> {
 
     private void Remove(Node node) {
         if (_head == null) return;
+        Length--;
         for (var currentNode = _head; currentNode.NextNode != null; currentNode = currentNode.NextNode) {
             if (!node.Data.Equals(currentNode.NextNode.Data)) continue;
             currentNode.NextNode = currentNode.NextNode.NextNode;
@@ -84,5 +66,20 @@ public class StateList<T> where T : class, IComparable<T>, IEquatable<T> {
                 return (true, node);
 
         return (false, null);
+    }
+
+    private class Node {
+        public Node? NextNode;
+
+        public Node(T data) {
+            Data = data;
+        }
+
+        public Node(T data, Node nextNode) {
+            Data = data;
+            NextNode = nextNode;
+        }
+
+        public T Data { get; }
     }
 }

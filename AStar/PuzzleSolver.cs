@@ -1,17 +1,18 @@
+using AStar.AdHocCollections;
+
 namespace AStar;
 
 public class PuzzleSolver {
-    private StateNode<SlidingPuzzleState> _root;
-    private SlidingPuzzleState _objective;
-    private readonly StateList<StateNode<SlidingPuzzleState>> _frontier = new();
     private readonly HashSet<SlidingPuzzleState> _exploredStates = new();
+    private readonly StateList<StateNode<SlidingPuzzleState>> _frontier = new();
+    private readonly SlidingPuzzleState _objective;
 
-    private int steps = 0;
+    private int _steps = 0;
 
     public PuzzleSolver(SlidingPuzzleState initialState, SlidingPuzzleState objective) {
-        _root = new StateNode<SlidingPuzzleState>(initialState, null);
         _objective = objective;
-        _frontier.Add(_root);
+        var root = new StateNode<SlidingPuzzleState>(initialState, null);
+        _frontier.Add(root);
     }
 
     private StateNode<SlidingPuzzleState>? Step() {
@@ -20,15 +21,14 @@ public class PuzzleSolver {
         }
         Console.WriteLine("");*/
 
-        steps++;
+        _steps++;
 
         //Console.WriteLine(steps + " " + _frontier.Length + " " + _frontier._head?.Data.Data.ExpectedCost);
 
         var current = _frontier.Pop();
         if (current == null) throw new Exception("No Possible solution");
 
-        Console.WriteLine(steps + " " + _frontier.Length + " " + current.Data.ExpectedCost + " " +
-                          current.Data._heuristicCost);
+        Console.WriteLine(_steps + " " + _frontier.Length);
 
         if (current.Data.Equals(_objective)) return current;
         _exploredStates.Add(current.Data);

@@ -1,19 +1,26 @@
+using AStar.AdHocCollections;
 using Xunit.Abstractions;
 
 namespace AStar.Test;
 
 public class UnitTest1 {
     private readonly ITestOutputHelper _outputHelper;
+
     public UnitTest1(ITestOutputHelper outputHelper) {
         _outputHelper = outputHelper;
     }
 
     [Fact]
     public void Test1() {
-        var state = new SlidingPuzzleState(5, new []{0,2,3,5,6,7,1,4,8});
-        var children = state.Children();
-        foreach (var child in children) {
-            _outputHelper.WriteLine(string.Join(',', child._pieces));
-        }
+        var tree = new StateTree<int>();
+        var generator = new Random();
+        const int dataSize = 1_000_00;
+        var data = Enumerable.Range(1, dataSize).Select(_ => generator.Next()).ToArray();
+
+        tree.Add(data);
+        _outputHelper.WriteLine(tree.Height.ToString());
+        Array.Sort(data);
+        Assert.True(data.SequenceEqual(tree));
+        //_outputHelper.WriteLine(tree.ToString());
     }
 }
