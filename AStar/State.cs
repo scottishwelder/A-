@@ -12,6 +12,7 @@ public abstract class State<TDerived> : IComparable<TDerived>, IEquatable<TDeriv
     protected int ExpectedCost => Cost + HeuristicCost;
     public abstract int CompareTo(TDerived? other);
     public abstract bool Equals(TDerived? other);
+    public abstract override bool Equals(object? other);
 
     protected void PostConstruction() {
         HeuristicCost = Heuristics();

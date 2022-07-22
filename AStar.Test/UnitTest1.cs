@@ -45,7 +45,7 @@ public class UnitTest1 {
     }
 
     private static void VerifyTree<T>(StateTree<T> tree, IEnumerable<T> expectedContent, int expectedCount)
-        where T : IComparable<T> {
+        where T : IComparable<T>, IEquatable<T> {
         Assert.Equal(expectedCount, tree.Count);
         var minHeight = Math.Log(tree.Count + 1, 2);
         var maxHeight = Math.Log(tree.Count + 2, Phi) + Math.Log(5, 2) / Math.Log(Phi, 2) / 2 - 2;

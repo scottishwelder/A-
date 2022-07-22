@@ -1,9 +1,11 @@
+using System.Collections;
+
 namespace AStar;
 
-public class StateNode<T> : IComparable<StateNode<T>>, IEquatable<StateNode<T>> where T : State<T> {
-    public readonly T Data;
+public class StateNode<T> : IComparable<StateNode<T>>, IEquatable<StateNode<T>>, IEnumerable<T> where T : State<T> {
     private readonly List<StateNode<T>> _children = new();
-    public readonly StateNode<T>? _parent;
+    private readonly StateNode<T>? _parent;
+    public readonly T Data;
 
     public StateNode(T data, StateNode<T>? parent) {
         Data = data;
@@ -14,8 +16,28 @@ public class StateNode<T> : IComparable<StateNode<T>>, IEquatable<StateNode<T>> 
         return Data.CompareTo(other?.Data);
     }
 
+    public IEnumerator<T> GetEnumerator() {
+        if (_parent is null)
+            yield return Data;
+        else
+            foreach (var element in _parent)
+                yield return element;
+    }
+
+    IEnumerator IEnumerable.GetEnumerator() {
+        return GetEnumerator();
+    }
+
     public bool Equals(StateNode<T>? other) {
         return Data.Equals(other?.Data);
+    }
+
+    public override bool Equals(object? obj) {
+        return Equals(obj as StateNode<T>);
+    }
+
+    public override int GetHashCode() {
+        return Data.GetHashCode();
     }
 
     public IEnumerable<StateNode<T>> Expand() {

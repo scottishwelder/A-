@@ -86,6 +86,10 @@ public class SlidingPuzzleState : State<SlidingPuzzleState> {
         //return other != null && _pieces.SequenceEqual(other._pieces);
     }
 
+    public override bool Equals(object? other) {
+        return Equals(other as SlidingPuzzleState);
+    }
+
     public override int GetHashCode() {
         return Pieces.GetHashCode();
     }

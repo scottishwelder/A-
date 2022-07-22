@@ -2,11 +2,11 @@ using System.Collections;
 
 namespace AStar.AdHocCollections;
 
-public partial class StateTree<T> : IEnumerable<T> where T : IComparable<T> {
-    private Node? _root;
+public partial class StateTree<T> : IEnumerable<T> where T : IComparable<T>, IEquatable<T> {
     private readonly Dictionary<T, Node> _stateLookup = new();
+    private Node? _root;
     public int Height => _root?.Height ?? 0;
-    public int Count { get; private set; } = 0;
+    public int Count { get; private set; }
 
     public IEnumerator<T> GetEnumerator() {
         if (_root is null)

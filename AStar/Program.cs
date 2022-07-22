@@ -19,21 +19,19 @@ internal static class AStar {
         var solver = new PuzzleSolver(initialState, objective);
         var result = solver.Solve();
 
-        for (var node = result; node != null; node = node._parent) {
-            Console.WriteLine(string.Join(',', node.Data.Pieces));
+        foreach (var element in result) {
+            Console.WriteLine(string.Join(',', element.Pieces));
         }
 
         return 0;
     }
 
-    private static bool Solvable(int[] initialPieces) {
+    private static bool Solvable(IReadOnlyList<int> initialPieces) {
         var inversions = 0;
-        for (var i = 0; i < 8; i++) {
-            for (var j = i + 1; j < 9; j++) {
-                if (initialPieces[j] < initialPieces[i])
-                    inversions++;
-            }
-        }
+        for (var i = 0; i < 8; i++)
+        for (var j = i + 1; j < 9; j++)
+            if (initialPieces[j] < initialPieces[i])
+                inversions++;
 
         return inversions % 2 == 0;
     }
