@@ -3,7 +3,8 @@ using System.Text;
 namespace AStar.AdHocCollections;
 
 public partial class StateTree<T> {
-    private class Node {
+    // TODO Set private
+    public class Node {
         public readonly T Data;
         public int Height = 1;
         public Node? Left;
@@ -24,27 +25,23 @@ public partial class StateTree<T> {
             var left = Left?.ToString();
             var right = Right?.ToString();
             if (left is not null)
-                builder.Append(left + ", ");
+                builder.Append(left + ", \n");
             builder.Append(Data);
             if (right is not null)
-                builder.Append(", " + right);
+                builder.Append(", \n" + right);
             return builder.ToString();
         }
 
         public IEnumerator<T> GetEnumerator() {
-            if (Left is not null) {
-                foreach (var element in Left) {
+            if (Left is not null)
+                foreach (var element in Left)
                     yield return element;
-                }
-            }
 
             yield return Data;
 
-            if (Right is not null) {
-                foreach (var element in Right) {
+            if (Right is not null)
+                foreach (var element in Right)
                     yield return element;
-                }
-            }
         }
     }
 }

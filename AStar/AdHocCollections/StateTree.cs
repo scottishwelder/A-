@@ -11,23 +11,64 @@ public partial class StateTree<T> : IEnumerable<T> where T : IComparable<T>, IEq
     public IEnumerator<T> GetEnumerator() {
         if (_root is null)
             yield break;
-        foreach (var element in _root) {
-            yield return element;
-        }
+        foreach (var element in _root) yield return element;
     }
 
     IEnumerator IEnumerable.GetEnumerator() {
         return GetEnumerator();
     }
 
+
+    // TODO Remove this
+    public Dictionary<T, Node> GetStateLookup() {
+        return _stateLookup;
+    }
+
+    private bool CheckSorting() {
+        using var enumerator = GetEnumerator();
+        enumerator.MoveNext();
+        var previous = enumerator.Current;
+        while (enumerator.MoveNext()) {
+            var current = enumerator.Current;
+            if (current.CompareTo(previous) < 0)
+                return false;
+            previous = current;
+        }
+
+        return true;
+    }
+
+    public void Remove(T data) {
+        if (_root is null)
+            throw new InvalidOperationException("Removing from an empty tree");
+        if (!_stateLookup.ContainsKey(data))
+            throw new InvalidOperationException("Removing nonexistent element");
+        (_root, _) = RemoveFrom(_root, data);
+    }
+
+    private static Node Rebalance(Node node) {
+        var bf = GetHeight(node.Left) - GetHeight(node.Right);
+        switch (bf) {
+            case > 1:
+                return GetHeight(node.Left!.Left) > GetHeight(node.Left.Right)
+                    ? RotateRight(node)
+                    : RotateLeftRight(node);
+            case < -1:
+                return GetHeight(node.Right!.Right) > GetHeight(node.Right.Left)
+                    ? RotateLeft(node)
+                    : RotateRightLeft(node);
+            default:
+                node.UpdateHeight();
+                return node;
+        }
+    }
+
     public override string ToString() {
-        return _root is null ? $"StateTree<{nameof(T)}>[]" : $"StateTree<{nameof(T)}>[{_root.ToString()}]";
+        return _root is null ? $"StateTree<{typeof(T)}>[]" : $"StateTree<{typeof(T)}>[{_root.ToString()}]";
     }
 
     private static Node RotateRight(Node node) {
-        Console.WriteLine("Rotating Right node " + node.Data);
-        var l = node.Left;
-        if (l == null) throw new ArgumentException("Rotating right a node with no left child.");
+        var l = node.Left!;
         var lr = l.Right;
         l.Right = node;
         node.Left = lr;
@@ -37,9 +78,7 @@ public partial class StateTree<T> : IEnumerable<T> where T : IComparable<T>, IEq
     }
 
     private static Node RotateLeft(Node node) {
-        Console.WriteLine("Rotating Left node " + node.Data);
-        var r = node.Right;
-        if (r == null) throw new ArgumentException("Rotating left a node with no right child.");
+        var r = node.Right!;
         var rl = r.Left;
         r.Left = node;
         node.Right = rl;
@@ -49,14 +88,12 @@ public partial class StateTree<T> : IEnumerable<T> where T : IComparable<T>, IEq
     }
 
     private static Node RotateLeftRight(Node node) {
-        if (node.Left == null) throw new ArgumentException("Rotating right a node with no left child");
-        node.Left = RotateLeft(node.Left);
+        node.Left = RotateLeft(node.Left!);
         return RotateRight(node);
     }
 
     private static Node RotateRightLeft(Node node) {
-        if (node.Right == null) throw new ArgumentException("Rotating left a node with no right child");
-        node.Right = RotateRight(node.Right);
+        node.Right = RotateRight(node.Right!);
         return RotateLeft(node);
     }
 

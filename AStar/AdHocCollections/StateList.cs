@@ -2,7 +2,7 @@ namespace AStar.AdHocCollections;
 
 public class StateList<T> where T : class, IComparable<T>, IEquatable<T> {
     private Node? _head;
-    public int Length { get; private set; } = 0;
+    public int Length { get; private set; }
 
     public void Add(T data) {
         Length++;

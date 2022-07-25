@@ -77,13 +77,13 @@ public class SlidingPuzzleState : State<SlidingPuzzleState> {
     }
 
     public override bool Equals(SlidingPuzzleState? other) {
-        if (other == null) return false;
-        for (var i = 0; i < 9; i++) {
-            if (Pieces[i] != other.Pieces[i]) return false;
-        }
-
-        return true;
-        //return other != null && _pieces.SequenceEqual(other._pieces);
+        // if (other == null) return false;
+        // for (var i = 0; i < 9; i++)
+        //     if (Pieces[i] != other.Pieces[i])
+        //         return false;
+        //
+        // return true;
+        return other != null && Pieces.SequenceEqual(other.Pieces);
     }
 
     public override bool Equals(object? other) {
@@ -91,6 +91,35 @@ public class SlidingPuzzleState : State<SlidingPuzzleState> {
     }
 
     public override int GetHashCode() {
-        return Pieces.GetHashCode();
+        return CombineHashCodes(Pieces.Select(x=>x.GetHashCode()).ToArray());
+
+        // return Pieces.GetHashCode();
+    }
+
+    private static int CombineHashCodes(params int[] hashCodes) {
+        if (hashCodes == null) throw new ArgumentNullException(nameof(hashCodes));
+
+        switch (hashCodes.Length) {
+            case 0:
+                throw new IndexOutOfRangeException();
+            case 1:
+                return hashCodes[0];
+        }
+
+        var result = hashCodes[0];
+
+        for (var i = 1; i < hashCodes.Length; i++) result = HashCode.Combine(result, hashCodes[i]);
+        // for (var i = 1; i < hashCodes.Length; i++) result = CombineHashCodes(result, hashCodes[i]);
+
+        return result;
+    }
+
+    private static int CombineHashCodes(int h1, int h2) {
+        return ((h1 << 4) + (h1 >> 28)) ^ h2;
+    }
+
+
+    public override string ToString() {
+        return $"SlidingPuzzleState {{[{string.Join(", ", Pieces)}], {ExpectedCost}, {HeuristicCost}}}";
     }
 }

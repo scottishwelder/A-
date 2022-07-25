@@ -13,6 +13,7 @@ public abstract class State<TDerived> : IComparable<TDerived>, IEquatable<TDeriv
     public abstract int CompareTo(TDerived? other);
     public abstract bool Equals(TDerived? other);
     public abstract override bool Equals(object? other);
+    public abstract override int GetHashCode();
 
     protected void PostConstruction() {
         HeuristicCost = Heuristics();
@@ -20,5 +21,4 @@ public abstract class State<TDerived> : IComparable<TDerived>, IEquatable<TDeriv
 
     protected abstract int Heuristics();
     public abstract IEnumerable<TDerived> Children();
-    public abstract override int GetHashCode();
 }
