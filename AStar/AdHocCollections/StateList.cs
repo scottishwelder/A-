@@ -6,8 +6,8 @@ public class StateList<T> where T : class, IComparable<T>, IEquatable<T> {
 
     public void Add(T data) {
         Length++;
-        var (contains, oldNode) = Contains(data);
-        if (contains) {
+        var oldNode = Contains(data);
+        if (oldNode is not null) {
             if (data.CompareTo(oldNode.Data) < 0) {
                 Remove(oldNode);
             }
@@ -17,7 +17,7 @@ public class StateList<T> where T : class, IComparable<T>, IEquatable<T> {
             }
         }
 
-        if (_head == null) {
+        if (_head is null) {
             _head = new Node(data);
             return;
         }
@@ -28,21 +28,21 @@ public class StateList<T> where T : class, IComparable<T>, IEquatable<T> {
         }
 
         Node node;
-        for (node = _head; node.NextNode != null; node = node.NextNode) {
+        for (node = _head; node.NextNode is not null; node = node.NextNode) {
             if (data.CompareTo(node.NextNode.Data) > 0) continue;
             var newNode = new Node(data, node.NextNode);
             node.NextNode = newNode;
             break;
         }
 
-        if (node.NextNode == null) {
+        if (node.NextNode is null) {
             var newNode = new Node(data);
             node.NextNode = newNode;
         }
     }
 
     public T? Pop() {
-        if (_head == null)
+        if (_head is null)
             return null;
         Length--;
         var firstNode = _head;
@@ -51,21 +51,21 @@ public class StateList<T> where T : class, IComparable<T>, IEquatable<T> {
     }
 
     private void Remove(Node node) {
-        if (_head == null) return;
+        if (_head is null) return;
         Length--;
-        for (var currentNode = _head; currentNode.NextNode != null; currentNode = currentNode.NextNode) {
+        for (var currentNode = _head; currentNode.NextNode is not null; currentNode = currentNode.NextNode) {
             if (!node.Data.Equals(currentNode.NextNode.Data)) continue;
             currentNode.NextNode = currentNode.NextNode.NextNode;
             return;
         }
     }
 
-    private (bool, Node?) Contains(T data) {
-        for (var node = _head; node != null; node = node.NextNode)
+    private Node? Contains(T data) {
+        for (var node = _head; node is not null; node = node.NextNode)
             if (data.Equals(node.Data))
-                return (true, node);
+                return node;
 
-        return (false, null);
+        return null;
     }
 
     private class Node {

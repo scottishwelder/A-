@@ -49,11 +49,11 @@ public class TreeTest {
     [Fact]
     public void StringTest() {
         var (tree, set) = GetTree(10_000);
-        var expected = $"StateTree<System.Int32>[{string.Join(", ", set)}]";
+        var expected = $"StateTree<System.Int32>[{string.Join(", \n", set)}]";
         Assert.Equal(expected, tree.ToString());
     }
 
-    private void VerifyTree<T>(StateTree<T> tree, IEnumerable<T> expectedContent, int expectedCount)
+    private static void VerifyTree<T>(StateTree<T> tree, IEnumerable<T> expectedContent, int expectedCount)
         where T : IComparable<T>, IEquatable<T> {
         var stateLookup = tree.GetStateLookup();
         Assert.Equal(expectedCount, tree.Count);

@@ -18,17 +18,10 @@ public class PuzzleSolver<TState> where TState : State<TState> {
     }
 
     private SearchNode<TState>? Step() {
-        /*for (var node = _frontier._head; node != null; node = node.NextNode) {
-            Console.WriteLine(string.Join(',', node.Data.Data._pieces) + " " + node.Data.Data.ExpectedCost + " " + node.Data.Data._heuristicCost);
-        }
-        Console.WriteLine("");*/
-
         _steps++;
 
-        //Console.WriteLine(steps + " " + _frontier.Length + " " + _frontier._head?.Data.Data.ExpectedCost);
-
+        if (_frontier.Count == 0) throw new InvalidOperationException("No Possible solution");
         var current = _frontier.Pop();
-        if (current == null) throw new Exception("No Possible solution");
 
         Console.Write("\r" + _steps + " " + _frontier.Count);
 
@@ -42,9 +35,17 @@ public class PuzzleSolver<TState> where TState : State<TState> {
         return null;
     }
 
-    public SearchNode<TState> Solve() {
-        var solution = Step();
-        while (solution == null) solution = Step();
+    public SearchNode<TState>? Solve() {
+        SearchNode<TState>? solution;
+        do {
+            try {
+                solution = Step();
+            }
+            catch (InvalidOperationException) {
+                return null;
+            }
+        } while (solution is null);
+
         Console.WriteLine("");
 
         return solution;

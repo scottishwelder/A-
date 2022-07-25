@@ -39,27 +39,32 @@ public partial class StateTree<T> : IEnumerable<T> where T : IComparable<T>, IEq
     }
 
     public void Remove(T data) {
-        if (_root is null)
-            throw new InvalidOperationException("Removing from an empty tree");
         if (!_stateLookup.ContainsKey(data))
             throw new InvalidOperationException("Removing nonexistent element");
-        (_root, _) = RemoveFrom(_root, data);
+        if (_root is not null)
+            RemoveFrom(ref _root, data);
+        else
+            throw new InvalidOperationException("Removing from an empty tree");
     }
 
-    private static Node Rebalance(Node node) {
+    private static void Rebalance(ref Node node) {
         var bf = GetHeight(node.Left) - GetHeight(node.Right);
         switch (bf) {
             case > 1:
-                return GetHeight(node.Left!.Left) > GetHeight(node.Left.Right)
-                    ? RotateRight(node)
-                    : RotateLeftRight(node);
+                if (GetHeight(node.Left!.Left) > GetHeight(node.Left.Right))
+                    RotateRight(ref node);
+                else
+                    RotateLeftRight(ref node);
+                break;
             case < -1:
-                return GetHeight(node.Right!.Right) > GetHeight(node.Right.Left)
-                    ? RotateLeft(node)
-                    : RotateRightLeft(node);
+                if (GetHeight(node.Right!.Right) > GetHeight(node.Right.Left))
+                    RotateLeft(ref node);
+                else
+                    RotateRightLeft(ref node);
+                break;
             default:
                 node.UpdateHeight();
-                return node;
+                break;
         }
     }
 
@@ -67,34 +72,34 @@ public partial class StateTree<T> : IEnumerable<T> where T : IComparable<T>, IEq
         return _root is null ? $"StateTree<{typeof(T)}>[]" : $"StateTree<{typeof(T)}>[{_root.ToString()}]";
     }
 
-    private static Node RotateRight(Node node) {
+    private static void RotateRight(ref Node node) {
         var l = node.Left!;
         var lr = l.Right;
         l.Right = node;
         node.Left = lr;
         node.UpdateHeight();
         l.UpdateHeight();
-        return l;
+        node = l;
     }
 
-    private static Node RotateLeft(Node node) {
+    private static void RotateLeft(ref Node node) {
         var r = node.Right!;
         var rl = r.Left;
         r.Left = node;
         node.Right = rl;
         node.UpdateHeight();
         r.UpdateHeight();
-        return r;
+        node = r;
     }
 
-    private static Node RotateLeftRight(Node node) {
-        node.Left = RotateLeft(node.Left!);
-        return RotateRight(node);
+    private static void RotateLeftRight(ref Node node) {
+        RotateLeft(ref node.Left!);
+        RotateRight(ref node);
     }
 
-    private static Node RotateRightLeft(Node node) {
-        node.Right = RotateRight(node.Right!);
-        return RotateLeft(node);
+    private static void RotateRightLeft(ref Node node) {
+        RotateRight(ref node.Right!);
+        RotateLeft(ref node);
     }
 
     private static int GetHeight(Node? node) {

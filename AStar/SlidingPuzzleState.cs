@@ -71,19 +71,19 @@ public class SlidingPuzzleState : State<SlidingPuzzleState> {
     }
 
     public override int CompareTo(SlidingPuzzleState? other) {
-        if (other == null) return 1;
+        if (other is null) return 1;
         var compareExpected = ExpectedCost.CompareTo(other.ExpectedCost);
         return compareExpected == 0 ? HeuristicCost.CompareTo(other.HeuristicCost) : compareExpected;
     }
 
     public override bool Equals(SlidingPuzzleState? other) {
-        // if (other == null) return false;
+        // if (other is null) return false;
         // for (var i = 0; i < 9; i++)
         //     if (Pieces[i] != other.Pieces[i])
         //         return false;
         //
         // return true;
-        return other != null && Pieces.SequenceEqual(other.Pieces);
+        return other is not null && Pieces.SequenceEqual(other.Pieces);
     }
 
     public override bool Equals(object? other) {
@@ -91,13 +91,13 @@ public class SlidingPuzzleState : State<SlidingPuzzleState> {
     }
 
     public override int GetHashCode() {
-        return CombineHashCodes(Pieces.Select(x=>x.GetHashCode()).ToArray());
+        return CombineHashCodes(Pieces.Select(x => x.GetHashCode()).ToArray());
 
         // return Pieces.GetHashCode();
     }
 
     private static int CombineHashCodes(params int[] hashCodes) {
-        if (hashCodes == null) throw new ArgumentNullException(nameof(hashCodes));
+        if (hashCodes is null) throw new ArgumentNullException(nameof(hashCodes));
 
         switch (hashCodes.Length) {
             case 0:
