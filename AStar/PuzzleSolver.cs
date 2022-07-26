@@ -4,34 +4,30 @@ namespace AStar;
 
 public class PuzzleSolver<TState> where TState : State<TState> {
     private readonly HashSet<TState> _exploredStates = new();
-
-    //private readonly StateList<SearchNode<TState>> _frontier = new();
     private readonly StateTree<SearchNode<TState>> _frontier = new();
-    private readonly TState _objective;
-
+    
     private int _steps;
 
-    public PuzzleSolver(TState initialState, TState objective) {
-        _objective = objective;
-        var root = new SearchNode<TState>(initialState, null);
+    public PuzzleSolver(TState initialState, World<TState> world) {
+        var root = new SearchNode<TState>(initialState, null, 0, world);
         _frontier.Add(root);
     }
 
     private SearchNode<TState>? Step() {
-        _steps++;
-
         if (_frontier.Count == 0) throw new InvalidOperationException("No Possible solution");
-        var current = _frontier.Pop();
 
         Console.Write("\r" + _steps + " " + _frontier.Count);
 
-        if (current.Data.Equals(_objective)) return current;
-        _exploredStates.Add(current.Data);
+        var current = _frontier.Pop();
+        if (current.IsObjective) return current;
+
+        _exploredStates.Add(current.State);
         var expansion = current.Expand();
         foreach (var stateNode in expansion)
-            if (!_exploredStates.Contains(stateNode.Data))
+            if (!_exploredStates.Contains(stateNode.State))
                 _frontier.Add(stateNode);
 
+        _steps++;
         return null;
     }
 

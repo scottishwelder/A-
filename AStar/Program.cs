@@ -2,27 +2,20 @@
 
 internal static class AStar {
     private static int Main() {
-        var generator = new Random();
-        int[] initialPieces;
         var objectivePieces = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 0 };
+        var initialPieces = GetSolvableSlidingPuzzle(objectivePieces);
+        var objectiveState = new SlidingPuzzleState(objectivePieces);
+        var initialState = new SlidingPuzzleState(initialPieces);
 
-        do {
-            initialPieces = new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }.OrderBy(_ => generator.Next()).ToArray();
-        } while (!Solvable(initialPieces, objectivePieces));
-
-        // initialPieces = new[] { 5, 8, 1, 4, 7, 2, 6, 3, 0 };
-
-        var initialState = new SlidingPuzzleState(0, initialPieces, objectivePieces);
-        var objective = new SlidingPuzzleState(0, objectivePieces, objectivePieces);
-        var solver = new PuzzleSolver<SlidingPuzzleState>(initialState, objective);
+        var world = new SlidingPuzzleWorld(objectiveState);
+        var solver = new PuzzleSolver<SlidingPuzzleState>(initialState, world);
         var result = solver.Solve();
 
-        if (result is null) {
-            Console.WriteLine(" No possible solution :\n" + initialState);
-            return 0;
-        }
-
-        foreach (var element in result) Console.WriteLine(string.Join(',', element.Pieces));
+        if (result is not null)
+            foreach (var state in result)
+                Console.WriteLine(state);
+        else
+            Console.WriteLine("No possible solution :\n" + initialState);
 
         return 0;
     }
@@ -33,9 +26,20 @@ internal static class AStar {
         for (var i = 0; i < 8; i++)
         for (var j = i + 1; j < 9; j++)
             if (initialPieces[i] != 0 && initialPieces[j] != 0 &&
-                Array.IndexOf(objectivePieces, initialPieces[j]) < Array.IndexOf(objectivePieces, initialPieces[i]))
+                Array.IndexOf(objectivePieces, initialPieces[j]) <
+                Array.IndexOf(objectivePieces, initialPieces[i]))
                 inversions++;
 
         return inversions % 2 == 0;
+    }
+
+    private static int[] GetSolvableSlidingPuzzle(int[] objectivePieces) {
+        var generator = new Random();
+        int[] initialPieces;
+        do {
+            initialPieces = new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }.OrderBy(_ => generator.Next()).ToArray();
+        } while (!Solvable(initialPieces, objectivePieces));
+
+        return initialPieces;
     }
 }

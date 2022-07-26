@@ -3,14 +3,33 @@ namespace AStar;
 public class SlidingPuzzleState : State<SlidingPuzzleState> {
     public readonly int[] Pieces;
 
-    public SlidingPuzzleState(int cost, int heuristicCost, int[] pieces) : base(cost, heuristicCost) {
+    public SlidingPuzzleState(int[] pieces) {
         Pieces = pieces;
     }
 
-    public override int CompareTo(SlidingPuzzleState? other) {
-        if (other is null) return 1;
-        var compareExpected = ExpectedCost.CompareTo(other.ExpectedCost);
-        return compareExpected == 0 ? HeuristicCost.CompareTo(other.HeuristicCost) : compareExpected;
+    public override IEnumerable<SlidingPuzzleState> Children() {
+        var zeroPosition = Array.IndexOf(Pieces, 0);
+        var zeroCoordinate = (zeroPosition % 3, zeroPosition / 3);
+
+        var children = new List<SlidingPuzzleState>();
+
+        SlidingPuzzleState GetNewState(int x, int y) {
+            var newPieces = (int[])Pieces.Clone();
+            var movingPiecePosition = y * 3 + x;
+            newPieces[zeroPosition] = newPieces[movingPiecePosition];
+            newPieces[movingPiecePosition] = 0;
+            return new SlidingPuzzleState(newPieces);
+        }
+
+        if (zeroCoordinate.Item2 > 0) children.Add(GetNewState(zeroCoordinate.Item1, zeroCoordinate.Item2 - 1));
+
+        if (zeroCoordinate.Item1 > 0) children.Add(GetNewState(zeroCoordinate.Item1 - 1, zeroCoordinate.Item2));
+
+        if (zeroCoordinate.Item2 < 2) children.Add(GetNewState(zeroCoordinate.Item1, zeroCoordinate.Item2 + 1));
+
+        if (zeroCoordinate.Item1 < 2) children.Add(GetNewState(zeroCoordinate.Item1 + 1, zeroCoordinate.Item2));
+
+        return children;
     }
 
     public override bool Equals(SlidingPuzzleState? other) {
@@ -25,7 +44,6 @@ public class SlidingPuzzleState : State<SlidingPuzzleState> {
         return CombineHashCodes(Pieces.Select(x => x.GetHashCode()).ToArray());
     }
 
-    // return Pieces.GetHashCode();
     private static int CombineHashCodes(params int[] hashCodes) {
         if (hashCodes is null) throw new ArgumentNullException(nameof(hashCodes));
 
@@ -45,6 +63,6 @@ public class SlidingPuzzleState : State<SlidingPuzzleState> {
     }
 
     public override string ToString() {
-        return $"SlidingPuzzleState {{[{string.Join(", ", Pieces)}], {ExpectedCost}, {HeuristicCost}}}";
+        return $"SlidingPuzzleState[{string.Join(", ", Pieces)}]";
     }
 }
