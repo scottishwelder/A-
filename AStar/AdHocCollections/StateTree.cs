@@ -18,12 +18,6 @@ public partial class StateTree<T> : IEnumerable<T> where T : IComparable<T>, IEq
         return GetEnumerator();
     }
 
-
-    // TODO Remove this
-    public Dictionary<T, Node> GetStateLookup() {
-        return _stateLookup;
-    }
-
     private bool CheckSorting() {
         using var enumerator = GetEnumerator();
         enumerator.MoveNext();

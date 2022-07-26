@@ -2,11 +2,12 @@ namespace AStar;
 
 public abstract class State<TDerived> : IComparable<TDerived>, IEquatable<TDerived>
     where TDerived : State<TDerived> {
-    protected readonly int Cost;
-    protected int HeuristicCost;
+    public readonly int Cost;
+    protected readonly int HeuristicCost;
 
-    protected State(int cost) {
+    protected State(int cost, int heuristicCost) {
         Cost = cost;
+        HeuristicCost = heuristicCost;
     }
 
     protected int ExpectedCost => Cost + HeuristicCost;
@@ -14,11 +15,4 @@ public abstract class State<TDerived> : IComparable<TDerived>, IEquatable<TDeriv
     public abstract bool Equals(TDerived? other);
     public abstract override bool Equals(object? other);
     public abstract override int GetHashCode();
-
-    protected void PostConstruction() {
-        HeuristicCost = Heuristics();
-    }
-
-    protected abstract int Heuristics();
-    public abstract IEnumerable<TDerived> Children();
 }

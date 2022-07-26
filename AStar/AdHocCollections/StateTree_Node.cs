@@ -3,8 +3,7 @@ using System.Text;
 namespace AStar.AdHocCollections;
 
 public partial class StateTree<T> {
-    // TODO Set private
-    public class Node {
+    private class Node {
         public readonly T Data;
         public int Height = 1;
         public Node? Left;

@@ -55,20 +55,13 @@ public class TreeTest {
 
     private static void VerifyTree<T>(StateTree<T> tree, IEnumerable<T> expectedContent, int expectedCount)
         where T : IComparable<T>, IEquatable<T> {
-        var stateLookup = tree.GetStateLookup();
         Assert.Equal(expectedCount, tree.Count);
-        Assert.Equal(tree.Count, stateLookup.Count);
 
         var minHeight = Math.Log(tree.Count + 1, 2);
         var maxHeight = Math.Log(tree.Count + 2, Phi) + Math.Log(5, 2) / Math.Log(Phi, 2) / 2 - 2;
         Assert.InRange(tree.Height, minHeight, maxHeight);
 
-        foreach (var (element, expected) in tree.Zip(expectedContent)) {
-            Assert.Equal(expected, element);
-            var result = stateLookup.TryGetValue(element, out var node);
-            Assert.True(result);
-            Assert.Equal(element, node!.Data);
-        }
+        Assert.Equal(expectedContent, tree);
     }
 
     private static (StateTree<int>, SortedSet<int>) GetTree(int dataSize) {
