@@ -5,7 +5,7 @@ namespace AStar;
 public class PuzzleSolver<TState> where TState : State<TState> {
     private readonly HashSet<TState> _exploredStates = new();
     private readonly StateTree<SearchNode<TState>> _frontier = new();
-    
+
     private int _steps;
 
     public PuzzleSolver(TState initialState, World<TState> world) {

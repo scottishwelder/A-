@@ -2,6 +2,10 @@ using System.Collections;
 
 namespace AStar.AdHocCollections;
 
+/// <summary>
+/// AVL Tree with special behaviour to handle the A* search nodes
+/// </summary>
+/// <typeparam name="T">The type of items to store in this collection</typeparam>
 public partial class StateTree<T> : IEnumerable<T> where T : IComparable<T>, IEquatable<T> {
     private readonly Dictionary<T, Node> _stateLookup = new();
     private Node? _root;
