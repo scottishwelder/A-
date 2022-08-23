@@ -1,4 +1,6 @@
-﻿namespace AStar;
+﻿using AStar.SlidingPuzzle;
+
+namespace AStar;
 
 internal static class AStar {
     private static int Main() {
@@ -15,7 +17,7 @@ internal static class AStar {
             foreach (var state in result)
                 Console.WriteLine(state);
         else
-            Console.WriteLine("No possible solution :\n" + initialState);
+            Console.WriteLine("No possible solution:\n" + initialState);
 
         return 0;
     }

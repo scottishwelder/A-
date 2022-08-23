@@ -1,4 +1,4 @@
-namespace AStar;
+namespace AStar.BaseTypes;
 
 public abstract class World<TState> where TState : State<TState> {
     public readonly TState Objective;
