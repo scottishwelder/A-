@@ -18,12 +18,16 @@ public class SearchNode<TState> :
         State = state;
         _parent = parent;
         _cost = cost;
-        _heuristicCost = world.Heuristics(state);
         _world = world;
+        _heuristicCost = _world.Heuristics(state);
     }
 
     private int ExpectedCost => _cost + _heuristicCost;
     public bool IsObjective => State.Equals(_world.Objective);
+
+    public IEnumerable<SearchNode<TState>> Expand() =>
+        from child in State.Children()
+        select new SearchNode<TState>(child, this, _cost + 1, _world);
 
     public int CompareTo(SearchNode<TState>? other) {
         if (other is null) return 1;
@@ -32,9 +36,8 @@ public class SearchNode<TState> :
     }
 
     public IEnumerator<TState> GetEnumerator() {
-        if (_parent is null) {
+        if (_parent is null)
             yield return State;
-        }
         else {
             yield return State;
             foreach (var element in _parent)
@@ -42,15 +45,10 @@ public class SearchNode<TState> :
         }
     }
 
-    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     public bool Equals(SearchNode<TState>? other) => State.Equals(other?.State);
-
-    public IEnumerable<SearchNode<TState>> Expand() {
-        return State.Children().Select(child =>
-            new SearchNode<TState>(child, this, _cost + 1, _world));
-    }
-
-    public override bool Equals(object? obj) => Equals(obj as SearchNode<TState>);
-    public override int GetHashCode() => State.GetHashCode();
     public override string ToString() => $"SearchNode<{typeof(TState)}>{{{State.ToString()}}}";
+    
+    public override int GetHashCode() => State.GetHashCode();
+    public override bool Equals(object? obj) => Equals(obj as SearchNode<TState>);
+    IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 }

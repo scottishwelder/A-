@@ -3,11 +3,11 @@ using System.Collections;
 namespace AStar.AdHocCollections;
 
 /// <summary>
-/// Sorted link list with special behaviour to handle the A* search nodes
+/// Sorted linked list with special behaviour to handle the A* search nodes
 /// </summary>
 /// <typeparam name="T">Type of items to be stored by the collection</typeparam>
-[Obsolete("The linear performance of this linked list is too much for the application. Use StateTree instead")]
-public class StateList<T> where T : class, IComparable<T>, IEquatable<T>, IHashCodeProvider {
+[Obsolete("The linear complexity of this linked list is too much for the application. Use StateTree instead")]
+public class StateList<T> where T : class, IComparable<T>, IEquatable<T> {
     private Node? _head;
     public int Length { get; private set; }
 

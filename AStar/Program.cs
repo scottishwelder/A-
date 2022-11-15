@@ -1,12 +1,13 @@
-﻿using AStar.SlidingPuzzle;
+﻿using System.Collections;
+using AStar.SlidingPuzzle;
 
 namespace AStar;
 
 internal static class AStar {
     private static int Main() {
         var objectivePieces = new[] { 1, 2, 3, 4, 5, 6, 7, 8, 0 };
-        var initialPieces = GetSolvableSlidingPuzzle(objectivePieces);
         var objectiveState = new SlidingPuzzleState(objectivePieces);
+        var initialPieces = GetSolvableSlidingPuzzle(objectivePieces);
         var initialState = new SlidingPuzzleState(initialPieces);
 
         var world = new SlidingPuzzleWorld(objectiveState);
@@ -17,12 +18,12 @@ internal static class AStar {
             foreach (var state in result)
                 Console.WriteLine(state);
         else
-            Console.WriteLine("No possible solution:\n" + initialState);
+            Console.WriteLine($"No possible solution for \n{initialState}");
 
         return 0;
     }
 
-    private static bool Solvable(IReadOnlyList<int> initialPieces, int[] objectivePieces) {
+    private static bool IsSolvable(IReadOnlyList<int> initialPieces, int[] objectivePieces) {
         var inversions = 0;
 
         for (var i = 0; i < 8; i++)
@@ -39,8 +40,8 @@ internal static class AStar {
         var generator = new Random();
         int[] initialPieces;
         do {
-            initialPieces = new[] { 0, 1, 2, 3, 4, 5, 6, 7, 8 }.OrderBy(_ => generator.Next()).ToArray();
-        } while (!Solvable(initialPieces, objectivePieces));
+            initialPieces = Enumerable.Range(0, 9).OrderBy(_ => generator.Next()).ToArray();
+        } while (!IsSolvable(initialPieces, objectivePieces));
 
         return initialPieces;
     }

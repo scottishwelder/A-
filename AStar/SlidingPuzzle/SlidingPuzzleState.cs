@@ -34,10 +34,7 @@ public class SlidingPuzzleState : State<SlidingPuzzleState> {
         if (zeroCoordinate.Item2 < 2) yield return GetNewStateMoving(zeroCoordinate.Item1, zeroCoordinate.Item2 + 1);
     }
 
-    public override bool Equals(SlidingPuzzleState? other) =>
-        other is not null && Pieces.SequenceEqual(other.Pieces);
-
-    public override int GetHashCode() => Pieces.Aggregate(0, HashCode.Combine);
-
+    public override bool Equals(SlidingPuzzleState? other) => other is not null && Pieces.SequenceEqual(other.Pieces);
     public override string ToString() => $"SlidingPuzzleState[{string.Join(", ", Pieces)}]";
+    public override int GetHashCode() => Pieces.Aggregate(0, HashCode.Combine);
 }
