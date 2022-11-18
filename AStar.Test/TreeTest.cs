@@ -21,8 +21,8 @@ public class TreeTest {
     public void PopTest() {
         var (tree, set) = GetTree(10_000);
         while (set.Count > 0) {
-            var treeElement = tree.Pop();
-            var setElement = set.First();
+            int treeElement = tree.Pop();
+            int setElement = set.First();
             set.Remove(setElement);
             Assert.Equal(setElement, treeElement);
             if (set.Count % 1000 == 0)
@@ -37,7 +37,7 @@ public class TreeTest {
     public void RemoveTest() {
         var (tree, set) = GetTree(100_000);
         var randomList = set.OrderBy(_ => new Random().Next()).ToList();
-        var size = set.Count;
+        int size = set.Count;
         for (var i = 0; i < size - 20; i++) {
             tree.Remove(randomList[0]);
             randomList.RemoveAt(0);
@@ -57,8 +57,8 @@ public class TreeTest {
         where T : IComparable<T>, IEquatable<T> {
         Assert.Equal(expectedCount, tree.Count);
 
-        var minHeight = Math.Log(tree.Count + 1, 2);
-        var maxHeight = Math.Log(tree.Count + 2, Phi) + Math.Log(5, 2) / Math.Log(Phi, 2) / 2 - 2;
+        double minHeight = Math.Log(tree.Count + 1, 2);
+        double maxHeight = Math.Log(tree.Count + 2, Phi) + Math.Log(5, 2) / Math.Log(Phi, 2) / 2 - 2;
         Assert.InRange(tree.Height, minHeight, maxHeight);
 
         Assert.Equal(expectedContent, tree);

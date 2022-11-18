@@ -1,11 +1,14 @@
 namespace AStar.BaseTypes;
 
-public abstract class World<TState> where TState : State<TState> {
+public abstract class World<TState> where TState : State<TState>
+{
     public readonly TState Objective;
 
-    protected World(TState objective) {
+    protected World(TState objective)
+    {
         Objective = objective;
     }
 
     public abstract int Heuristics(TState state);
+    public virtual int Cost(TState state) => 1;
 }

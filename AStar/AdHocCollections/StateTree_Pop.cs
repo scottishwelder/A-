@@ -2,8 +2,11 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace AStar.AdHocCollections;
 
-public partial class StateTree<T> {
-    public T Pop() {
+/// Partial definition 4 of 5
+public partial class StateTree<T>
+{
+    public T Pop()
+    {
         if (_root is null)
             throw new InvalidOperationException("Popping an empty tree");
 
@@ -13,8 +16,10 @@ public partial class StateTree<T> {
         return element;
     }
 
-    private static T PopFrom([DisallowNull] ref Node? node) {
-        if (node.Left is null) {
+    private static T PopFrom([DisallowNull] ref Node? node)
+    {
+        if (node.Left is null)
+        {
             var data = node.Data;
             node = node.Right;
             return data;

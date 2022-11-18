@@ -3,16 +3,19 @@ using AStar.BaseTypes;
 
 namespace AStar;
 
-public class PuzzleSolver<TState> where TState : State<TState> {
+public class PuzzleSolver<TState> where TState : State<TState>
+{
     private readonly HashSet<TState> _exploredStates = new();
     private readonly StateTree<SearchNode<TState>> _frontier = new();
     private int _steps;
 
-    public PuzzleSolver(TState initialState, World<TState> world) {
+    public PuzzleSolver(TState initialState, World<TState> world)
+    {
         _frontier.Add(new SearchNode<TState>(initialState, null, 0, world));
     }
 
-    private SearchNode<TState>? Step() {
+    private SearchNode<TState>? Step()
+    {
         if (_frontier.Count == 0) throw new InvalidOperationException("No Possible solution");
 
         Log();
@@ -30,13 +33,16 @@ public class PuzzleSolver<TState> where TState : State<TState> {
         return null;
     }
 
-    public SearchNode<TState>? Solve() {
+    public SearchNode<TState>? Solve()
+    {
         SearchNode<TState>? solution;
         do
-            try {
+            try
+            {
                 solution = Step();
             }
-            catch (InvalidOperationException) {
+            catch (InvalidOperationException)
+            {
                 return null;
             }
         while (solution is null);
@@ -44,7 +50,8 @@ public class PuzzleSolver<TState> where TState : State<TState> {
         return solution;
     }
 
-    private void Log() {
+    private void Log()
+    {
         Console.Write($"\r{_steps} {_frontier.Count}");
     }
 }

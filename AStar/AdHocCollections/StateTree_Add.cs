@@ -2,14 +2,20 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace AStar.AdHocCollections;
 
-public partial class StateTree<T> {
+/// Partial definition 2 of 5
+public partial class StateTree<T>
+{
     // ReSharper disable once MemberCanBePrivate.Global
-    public void Add(T data) {
+    public void Add(T data)
+    {
         var existingNode = Contains(data);
-        if (existingNode is not null) {
+        if (existingNode is not null)
+        {
             if (data.CompareTo(existingNode.Data) < 0)
+                // Tree already contains the data and it should be replaced.
                 Remove(existingNode.Data);
             else
+                // Tree already contains the data and nothing should be done.
                 return;
         }
 
@@ -17,12 +23,15 @@ public partial class StateTree<T> {
         AddTo(ref _root, data);
     }
 
-    public void Add(IEnumerable<T> data) {
+    public void Add(IEnumerable<T> data)
+    {
         foreach (var element in data) Add(element);
     }
 
-    private void AddTo(ref Node? node, T data) {
-        if (node is null) {
+    private void AddTo(ref Node? node, T data)
+    {
+        if (node is null)
+        {
             node = new Node(data, null, null);
             _stateLookup.Add(data, node);
             return;
@@ -36,13 +45,16 @@ public partial class StateTree<T> {
         Rebalance(ref node);
     }
 
-    private Node? Contains(T data) {
+    private Node? Contains(T data)
+    {
         _stateLookup.TryGetValue(data, out var response);
         return response;
     }
 
-    private bool RemoveFrom([DisallowNull] ref Node? node, T data) {
-        if (data.Equals(node.Data)) {
+    private bool RemoveFrom([DisallowNull] ref Node? node, T data)
+    {
+        if (data.Equals(node.Data))
+        {
             Count--;
 #if DEBUG
             if (!_stateLookup.Remove(data))
@@ -50,12 +62,14 @@ public partial class StateTree<T> {
 #else
             _stateLookup.Remove(data);
 #endif
-            if (node.Left is null) {
+            if (node.Left is null)
+            {
                 node = node.Right;
                 return true;
             }
 
-            if (node.Right is null) {
+            if (node.Right is null)
+            {
                 node = node.Left;
                 return true;
             }
@@ -67,7 +81,8 @@ public partial class StateTree<T> {
         }
 
         var found = false;
-        switch (data.CompareTo(node.Data)) {
+        switch (data.CompareTo(node.Data))
+        {
             case > 0:
                 if (node.Right is not null)
                     found = RemoveFrom(ref node.Right, data);

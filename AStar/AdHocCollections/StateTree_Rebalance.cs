@@ -1,9 +1,13 @@
 namespace AStar.AdHocCollections;
 
-public partial class StateTree<T> {
-    private static void Rebalance(ref Node node) {
-        var balanceFactor = GetHeight(node.Left) - GetHeight(node.Right);
-        switch (balanceFactor) {
+/// Partial definition 5 of 5
+public partial class StateTree<T>
+{
+    private static void Rebalance(ref Node node)
+    {
+        int balanceFactor = GetHeight(node.Left) - GetHeight(node.Right);
+        switch (balanceFactor)
+        {
             case > 1:
                 if (GetHeight(node.Left!.Left) > GetHeight(node.Left.Right))
                     RotateRight(ref node);
@@ -22,7 +26,8 @@ public partial class StateTree<T> {
         }
     }
 
-    private static void RotateRight(ref Node node) {
+    private static void RotateRight(ref Node node)
+    {
         var l = node.Left!;
         var lr = l.Right;
         l.Right = node;
@@ -32,7 +37,8 @@ public partial class StateTree<T> {
         node = l;
     }
 
-    private static void RotateLeft(ref Node node) {
+    private static void RotateLeft(ref Node node)
+    {
         var r = node.Right!;
         var rl = r.Left;
         r.Left = node;
@@ -42,12 +48,14 @@ public partial class StateTree<T> {
         node = r;
     }
 
-    private static void RotateLeftRight(ref Node node) {
+    private static void RotateLeftRight(ref Node node)
+    {
         RotateLeft(ref node.Left!);
         RotateRight(ref node);
     }
 
-    private static void RotateRightLeft(ref Node node) {
+    private static void RotateRightLeft(ref Node node)
+    {
         RotateRight(ref node.Right!);
         RotateLeft(ref node);
     }

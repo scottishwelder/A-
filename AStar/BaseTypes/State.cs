@@ -1,6 +1,7 @@
 namespace AStar.BaseTypes;
 
-public abstract class State<TDerived> : IEquatable<TDerived> where TDerived : State<TDerived> {
+public abstract class State<TDerived> : IEquatable<TDerived> where TDerived : State<TDerived>
+{
     public abstract bool Equals(TDerived? other);
     public abstract IEnumerable<TDerived> Children();
     public abstract override int GetHashCode();
